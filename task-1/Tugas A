@@ -1,0 +1,21 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int P, Q, R, S;
+
+    cin >> P >> Q;
+
+    R = P * P + Q * Q + 1;
+    S = R / 4;
+
+    if(R % 4 == 0){
+        cout << S << endl;
+    } else {
+        cout << -1 << endl;
+    }
+
+    return 0;
+}
