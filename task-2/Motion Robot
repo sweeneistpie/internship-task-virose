@@ -1,1 +1,64 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
 
+using namespace std;
+namespace rj = rapidjson;
+
+int main() {
+    int movieID;
+    cout << "ID motion movie: ";
+    cin >> movieID;
+
+    string path_movie = "XL/motion_movie/" + to_string(movieID) + ".json";
+    ifstream file_movie(path_movie);
+    if (!file_movie.is_open()) {
+        cout << "error opening file" << endl;
+        return 1;
+    }
+
+    rj::IStreamWrapper stream_movie(file_movie);
+    rj::Document doc_movie;
+
+    doc_movie.ParseStream(stream_movie);
+
+    if(doc_movie.HasParseError()) 
+    {
+        cout << "JSON parse error" << std::endl;
+    }
+
+    int id_unit = doc_movie["motion_unit"].GetInt();
+    string path_unit = "XL/motion_unit/" + to_string(id_unit) + ".json";
+
+
+    ifstream file_unit(path_unit);
+    if (!file_unit.is_open()) {
+        cout << "error opening file" << endl;
+        return 1;
+    }
+
+    rj::IStreamWrapper stream_unit(file_unit);
+    rj::Document doc_unit;
+    doc_unit.ParseStream(stream_unit);
+
+    if(doc_unit.HasParseError()) 
+    {
+        cout << "JSON parse error" << std::endl;
+    }
+
+    cout << "ID Unit: " << doc_unit["id"].GetInt() << endl;
+
+    const rj::Value& total_frame = doc_unit["motion_frame"];
+    for (rj::SizeType i = 0; i < total_frame.Size(); i++) {
+        const rj::Value& satu_frame = total_frame[i];
+        cout << "Frame ke-" << i + 1 << ": ";
+
+        for (rj::SizeType j = 0; j < satu_frame.Size(); j++) {
+            cout << satu_frame[j].GetInt() << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
